@@ -12,28 +12,33 @@ except ImportError:  # pragma: no cover
     from quote_model import QuoteModel
     from meme_engine import MemeEngine
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "_data")
+
 app = Flask(__name__)
 
-meme = MemeEngine('./static')
+meme = MemeEngine(os.path.join(BASE_DIR, "static"))
 
 
 def setup():
-    """ Load all resources """
+    """Load all resources."""
 
-    quote_files = ['./_data/DogQuotes/DogQuotesTXT.txt',
-                   './_data/DogQuotes/DogQuotesDOCX.docx',
-                   './_data/DogQuotes/DogQuotesPDF.pdf',
-                   './_data/DogQuotes/DogQuotesCSV.csv']
+    quote_files = [
+        os.path.join(DATA_DIR, "DogQuotes", "DogQuotesTXT.txt"),
+        os.path.join(DATA_DIR, "DogQuotes", "DogQuotesDOCX.docx"),
+        os.path.join(DATA_DIR, "DogQuotes", "DogQuotesPDF.pdf"),
+        os.path.join(DATA_DIR, "DogQuotes", "DogQuotesCSV.csv"),
+    ]
 
     quotes = []
-    for f in quote_files:
-        quotes.extend(Ingestor.parse(f))
+    for quote_file in quote_files:
+        quotes.extend(Ingestor.parse(quote_file))
 
-    images_path = "./_data/photos/dog/"
+    images_path = os.path.join(DATA_DIR, "photos", "dog")
 
     imgs = []
-    for root, dirs, files in os.walk(images_path):
-        imgs = [os.path.join(root, name) for name in files]
+    for root, _, files in os.walk(images_path):
+        imgs.extend(os.path.join(root, name) for name in files)
 
     return quotes, imgs
 
