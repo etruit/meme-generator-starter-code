@@ -1,3 +1,5 @@
+"""Abstract interface for quote ingestors."""
+
 from abc import ABC, abstractmethod
 from typing import List, Set
 

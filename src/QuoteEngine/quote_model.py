@@ -1,3 +1,6 @@
+"""Value object representing a quote."""
+
+
 class QuoteModel:
     """Represent a quote with a body and an author."""
 

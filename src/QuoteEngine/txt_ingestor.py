@@ -1,3 +1,5 @@
+"""Plain-text quote ingestion."""
+
 import os
 from typing import List
 

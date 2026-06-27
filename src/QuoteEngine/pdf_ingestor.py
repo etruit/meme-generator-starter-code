@@ -1,3 +1,5 @@
+"""PDF-based quote ingestion."""
+
 import os
 import subprocess
 from typing import List

@@ -1,3 +1,5 @@
+"""Dispatcher for selecting the appropriate quote ingestor."""
+
 import argparse
 import os
 from typing import List, Type
