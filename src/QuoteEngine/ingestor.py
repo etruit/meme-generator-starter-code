@@ -38,8 +38,7 @@ class Ingestor(IngestorInterface):
 
     @classmethod
     def parse(cls, path: str) -> List[QuoteModel]:
-        """Parse a quote file by selecting the appropriate ingestor
-        strategy."""
+        """Parse a file by selecting the an ingestor strategy."""
         for ingestor in cls._ingestors():
             if ingestor.can_ingest(path):
                 return ingestor.parse(path)

@@ -21,15 +21,23 @@ class MemeEngine:
         author: str,
         width: int = 500,
     ) -> str:
-        """Load an image, resize it, add quote text and author, then save it."""
+        """Load an image, resize, add quote, save."""
         image = self._load_and_resize_image(img_path, width)
         draw = ImageDraw.Draw(image)
         font = self._get_font(image)
         message = self._build_message(text, author)
-        wrapped_message = self._wrap_message(draw, message, font, width - 40)
-        text_width, text_height = self._get_text_size(draw, wrapped_message, font)
-        x, y = self._get_text_position(width, image.height, text_width, text_height)
-        self._draw_text(draw, wrapped_message, font, x, y, text_width, text_height)
+        wrapped_message = self._wrap_message(
+            draw, message, font, width - 40
+        )
+        text_width, text_height = self._get_text_size(
+            draw, wrapped_message, font
+        )
+        x, y = self._get_text_position(
+            width, image.height, text_width, text_height
+        )
+        self._draw_text(
+            draw, wrapped_message, font, x, y, text_width, text_height
+        )
         return self._save_image(image)
 
     def _load_and_resize_image(
@@ -62,7 +70,7 @@ class MemeEngine:
         font: ImageFont.ImageFont,
         max_width: int,
     ) -> str:
-        """Wrap the message so it fits within the available image width."""
+        """Wrap the message so it fits within the image width."""
         words = message.split()
         lines = []
         current_line = []
@@ -82,14 +90,21 @@ class MemeEngine:
         return "\n".join(lines)
 
     def _get_text_size(
-        self, draw: ImageDraw.ImageDraw, message: str, font: ImageFont.ImageFont
+        self,
+        draw: ImageDraw.ImageDraw,
+        message: str,
+        font: ImageFont.ImageFont,
     ) -> Tuple[int, int]:
         """Measure the rendered text dimensions."""
         text_bbox = draw.multiline_textbbox((0, 0), message, font=font)
         return text_bbox[2] - text_bbox[0], text_bbox[3] - text_bbox[1]
 
     def _get_text_position(
-        self, width: int, height: int, text_width: int, text_height: int
+        self,
+        width: int,
+        height: int,
+        text_width: int,
+        text_height: int,
     ) -> Tuple[int, int]:
         """Choose a random position for the text box within the image."""
         margin = 10
@@ -107,7 +122,7 @@ class MemeEngine:
         text_width: int,
         text_height: int,
     ) -> None:
-        """Draw the text and a dark background box onto the image."""
+        """Render the meme text and its background box onto the image."""
         margin = 10
         background_box = [
             x - margin,
