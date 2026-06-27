@@ -1,7 +1,7 @@
 import random
 import os
 import requests
-from flask import Flask, render_template, abort, request
+from flask import Flask, render_template, abort, request, send_from_directory
 
 try:
     from QuoteEngine.ingestor import Ingestor
@@ -14,10 +14,12 @@ except ImportError:  # pragma: no cover
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "_data")
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=TEMPLATE_DIR)
+app.config["STATIC_FOLDER"] = os.path.join(BASE_DIR, "static")
 
-meme = MemeEngine(os.path.join(BASE_DIR, "static"))
+meme = MemeEngine(app.config["STATIC_FOLDER"])
 
 
 def setup():
@@ -46,6 +48,12 @@ def setup():
 quotes, imgs = setup()
 
 
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    """Serve generated meme images from the static directory."""
+    return send_from_directory(app.config["STATIC_FOLDER"], filename)
+
+
 @app.route('/')
 def meme_rand():
     """ Generate a random meme """
@@ -53,7 +61,8 @@ def meme_rand():
     img = random.choice(imgs)
     quote = random.choice(quotes)
     path = meme.make_meme(img, quote.body, quote.author)
-    return render_template('meme.html', path=path)
+    filename = os.path.basename(path)
+    return render_template('meme.html', path=f'/static/{filename}')
 
 
 @app.route('/create', methods=['GET'])
@@ -80,7 +89,8 @@ def meme_post():
     # Remove the temporary saved image
     os.remove('./tmp/image.jpg')
 
-    return render_template('meme.html', path=path)
+    filename = os.path.basename(path)
+    return render_template('meme.html', path=f'/static/{filename}')
 
 
 if __name__ == "__main__":
